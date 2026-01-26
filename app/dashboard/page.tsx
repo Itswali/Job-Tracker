@@ -1,9 +1,17 @@
-import React from 'react'
+import { getSession } from '@/lib/auth/auth';
+import connectDB from '@/lib/db'
+import { Board } from '@/lib/models';
 
-export default function Dashboard() {
-  return (
-    <div>
-Dashboard Page
-    </div>
-  )
+export default async function Dashboard() {
+  const session = await getSession();
+
+  await connectDB();
+
+  const board = await Board.findOne({
+    userId: session.user.id,
+    name: "Job Hunt",
+  });
+
+  console.log(board);
+  return (<div>Dashboard Page</div>)
 }
