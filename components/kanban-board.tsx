@@ -1,0 +1,106 @@
+"use client";
+
+import { Board, Column } from "@/lib/models/models.types";
+import { Award, Calendar, CheckCircle2, Mic, MoreVertical, Trash2, XCircle } from "lucide-react";
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
+import { Button } from "./ui/button";
+import CreateJobApplicationDailog from "./create-job-dailog";
+import board from "@/lib/models/board";
+
+interface KanbanBoardProps {
+  board: Board;
+  userId: string;
+}
+
+interface ColConfig {
+  color: string;
+  icon: React.ReactNode;
+}
+
+const COLUMN_CONFIG: Array<ColConfig> = [
+  {
+    color: "bg-cyan-500",
+    icon: <Calendar className="h-4 w-4" />,
+  },
+  {
+    color: "bg-purple-500",
+    icon: <CheckCircle2 className="h-4 w-4" />,
+  },
+  {
+    color: "bg-green-500",
+    icon: <Mic className="h-4 w-4" />,
+  },
+  {
+    color: "bg-yellow-500",
+    icon: <Award className="h-4 w-4" />,
+  },
+  {
+    color: "bg-red-500",
+    icon: <XCircle className="h-4 w-4" />,
+  },
+];
+
+function DroppableColumn({
+  column,
+  config,
+  boardId,
+}: {
+  column: Column;
+  config: ColConfig;
+  boardId: string;
+}) {
+  console.log(column);
+  return (
+    <Card>
+      <CardHeader className={`${config.color}`}>
+        <div className="flex items-center justify-between">
+          <div className="flex text-indigo-100 items-center gap-3">
+            {config.icon}
+            <CardTitle className="text-indigo-100">{column.name}</CardTitle>
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger>
+              <Button variant="ghost"><MoreVertical /></Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent>
+              <DropdownMenuItem>
+               <Trash2 />  Delete Column
+              </DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </div>
+      </CardHeader>
+        <CardContent className="space-y-2 pt-4 bg-gray-50/50 min-h-100 rounded-b-lg">
+        <CreateJobApplicationDailog columnId={column._id} boardId={boardId} />
+        </CardContent>
+    </Card>
+  );
+}
+
+export default function KanbanBoard({ board, userId }: KanbanBoardProps) {
+  const columns = board.columns;
+
+  return (
+    <>
+      <div>
+        <div>
+          {columns.map((col, key) => {
+            const config = COLUMN_CONFIG[key] || {
+              color: "bg-cyan-500",
+              icon: <Calendar className="h-4 w-4" />,
+            };
+            return (
+              <DroppableColumn
+                key={key}
+                column={col}
+                config={config}
+                boardId={board._id}
+              />
+            );
+          })}
+        </div>
+      </div>
+    </>
+  );
+}
