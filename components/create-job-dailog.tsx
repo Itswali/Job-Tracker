@@ -46,7 +46,7 @@ export default function CreateJobApplicationDailog({
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     try {
-      const result = await createJobApplication({...formData, columnId, boardId, tags: formData.tags.split("").map((tag) => tag.trim()).filter((tag) => tag.length > 0),
+      const result = await createJobApplication({...formData, columnId, boardId, tags: formData.tags.split(",").map((tag) => tag.trim()).filter((tag) => tag.length > 0),
       });
 
       if(!result.error) {
@@ -105,11 +105,11 @@ export default function CreateJobApplicationDailog({
             </div>
             <div className="space-y-2">
                <Label htmlFor="description">Description</Label>
-                <Textarea id="description" value={formData.description} placeholder="breif description of the role" required onChange={(e) => setFormData({...formData, description: e.target.value})} />
+                <Textarea id="description" value={formData.description} placeholder="breif description of the role" onChange={(e) => setFormData({...formData, description: e.target.value})} />
             </div>
             <div className="space-y-2">
                <Label htmlFor="notes">Notes</Label>
-                <Textarea id="notes" value={formData.notes} required onChange={(e) => setFormData({...formData, notes: e.target.value})} />
+                <Textarea id="notes" value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} />
             </div>
           </div>
           <DialogFooter>

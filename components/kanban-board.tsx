@@ -75,7 +75,7 @@ function DroppableColumn({
         </div>
       </CardHeader>
         <CardContent className="space-y-2 pt-4 bg-gray-50/50 min-h-100 rounded-b-lg">
-        {sortedJobs.msp((job, key) =>(
+        {sortedJobs.map((job, key) =>(
           <SortableJobCard key={key} job={{...job, columnId: job.columnId || column._id}} columns={sortedColumns} />
         ))}
         <CreateJobApplicationDailog columnId={column._id} boardId={boardId} />
