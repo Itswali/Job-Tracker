@@ -1,7 +1,5 @@
-import "./board";
-import "./column";
-import "./job-applicattion";
+import Board from "./board";
+import Column from "./column";
+import JobApplication from "./job-application";
 
-export { default as Board } from "./board";
-export { default as Column } from "./column";
-export { default as JobApplication } from "./job-applicattion";
+export { Board, Column, JobApplication };
