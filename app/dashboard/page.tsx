@@ -13,16 +13,18 @@ export default async function Dashboard() {
     name: "Job Hunt",
   }).populate({
     path: "columns",
-  })
+    populate: {
+      path: "jobApplications",
+    },
+  });
 
-  console.log(board);
   return (
   <div>
     <div>
       <h1>{board.name}</h1>
       <p>track your job applications</p>
     </div>
-    <KanbanBoard board={JSON.parse(JSON.stringify(board))} userId={session?.user.id} />
+    <KanbanBoard board={JSON.parse(JSON.stringify(board))} userId={session.user.id} />
   </div>
 )
 }
