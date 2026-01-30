@@ -1,12 +1,13 @@
 "use client";
 
-import { Board, Column } from "@/lib/models/models.types";
+import { Board, Column, JobApplication } from "@/lib/models/models.types";
 import { Award, Calendar, CheckCircle2, Mic, MoreVertical, Trash2, XCircle } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "./ui/card";
 import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import CreateJobApplicationDailog from "./create-job-dailog";
 import board from "@/lib/models/board";
+import JobApplicationCard from "./job-application-card";
 
 interface KanbanBoardProps {
   board: Board;
@@ -45,12 +46,14 @@ function DroppableColumn({
   column,
   config,
   boardId,
+  sortedColumns,
 }: {
   column: Column;
   config: ColConfig;
   boardId: string;
+  sortedColumns: Column[];
 }) {
-  console.log(column);
+  const sortedJobs = column.jobApplications?.sort((a,b) => a.order = b.order) || [];
   return (
     <Card>
       <CardHeader className={`${config.color}`}>
@@ -72,14 +75,23 @@ function DroppableColumn({
         </div>
       </CardHeader>
         <CardContent className="space-y-2 pt-4 bg-gray-50/50 min-h-100 rounded-b-lg">
+        {sortedJobs.msp((job, key) =>(
+          <SortableJobCard key={key} job={{...job, columnId: job.columnId || column._id}} columns={sortedColumns} />
+        ))}
         <CreateJobApplicationDailog columnId={column._id} boardId={boardId} />
         </CardContent>
     </Card>
   );
 }
 
+function SortableJobCard({job, columns}: {job: JobApplication; columns: Column[]}) {
+  return <div><JobApplicationCard job={job} columns={columns} /></div>
+}
+
 export default function KanbanBoard({ board, userId }: KanbanBoardProps) {
   const columns = board.columns;
+
+  const sortedColumns = columns?.sort((a,b) => a.order = b.order) || [];
 
   return (
     <>
@@ -96,6 +108,7 @@ export default function KanbanBoard({ board, userId }: KanbanBoardProps) {
                 column={col}
                 config={config}
                 boardId={board._id}
+                sortedColumns={sortedColumns}
               />
             );
           })}
