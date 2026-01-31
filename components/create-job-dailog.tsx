@@ -97,7 +97,7 @@ export default function CreateJobApplicationDailog({
             </div>
             <div className="space-y-2">
                <Label htmlFor="jobUrl">Job URL</Label>
-                <Input id="jobUrl" placeholder="https://..." required value={formData.jobUrl} onChange={(e) => setFormData({...formData, jobUrl: e.target.value})} />
+                <Input id="jobUrl" placeholder="https://..."  value={formData.jobUrl} onChange={(e) => setFormData({...formData, jobUrl: e.target.value})} />
             </div>
             <div className="space-y-2">
                <Label htmlFor="tags">Tags (comma-seperated)</Label>
