@@ -90,7 +90,7 @@ function SortableJobCard({job, columns}: {job: JobApplication; columns: Column[]
 }
 
 export default function KanbanBoard({ board, userId }: KanbanBoardProps) {
-  const columns = board.columns;
+  // const columns = board.columns;
 
   const {columns, moveJob} = useBoard(board);
 
