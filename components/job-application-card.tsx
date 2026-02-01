@@ -1,3 +1,4 @@
+"use client"
 import { Column, JobApplication } from "@/lib/models/models.types";
 import { Card, CardContent } from "./ui/card";
 import { Edit2, ExternalLink, MoreVertical, Trash2 } from "lucide-react";
@@ -9,6 +10,11 @@ import {
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
 import { updateJobApplication } from "@/lib/actions/job-applications";
+import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "./ui/dialog";
+import { Textarea } from "./ui/textarea";
+import { Label } from "./ui/label";
+import { Input } from "./ui/input";
+import { useState } from "react";
 
 interface JobApplicationCardProps {
   job: JobApplication;
@@ -19,6 +25,35 @@ export default function JobApplicationCard({
   job,
   columns,
 }: JobApplicationCardProps) {
+  const [isEditing, setIsEditing] = useState(false);
+  const [formData, setFormData] = useState({
+    company: job.company,
+    position: job.position,
+    location: job.location || "",
+    notes: job.notes || "",
+    salary: job.salary || "",
+    jobUrl: job.jobUrl || "",
+    columnId: job.columnId || "",
+    tags: job.tags?.join(", ") || "",
+    description: job.description || "",
+  });
+
+
+  async function handleUpdate(e: React.FormEvent){
+    e.preventDefault();
+    try {
+      const result = await updateJobApplication(job._id, {
+        ...formData,
+        tags: formData.tags.split(",").map((tag) => tag.trim()).filter((tag) => tag.length > 0)
+      });
+
+      if(!result.error) {
+        setIsEditing(false);
+      }
+    } catch (err) {
+      console.error("Failed to move job application: ", err)
+    }
+  }
 
   async function handleMove(newColumnId: string){
     try {
@@ -97,7 +132,7 @@ export default function JobApplicationCard({
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="w-48">
-                  <DropdownMenuItem className="cursor-pointer">
+                  <DropdownMenuItem className="cursor-pointer" onClick={() => setIsEditing(true)}>
                     <Edit2 className="mr-2 h-4 w-4" /> Edit Details
                   </DropdownMenuItem>
 
@@ -128,6 +163,58 @@ export default function JobApplicationCard({
           </div>
         </CardContent>
       </Card>
+        <Dialog open={isEditing} onOpenChange={setIsEditing}>
+            <DialogContent>
+              <DialogHeader>
+                <DialogTitle>Add Job Application</DialogTitle>
+                <DialogDescription>Track a new job application</DialogDescription>
+              </DialogHeader>
+              <form className="space-y-4" onSubmit={handleUpdate}>
+                <div className="space-y-4">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="compnay"> Company *</Label>
+                      <Input id="compnay" required value={formData.company} onChange={(e) => setFormData({...formData, company: e.target.value})} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="position"> Position *</Label>
+                      <Input id="position" required value={formData.position} onChange={(e) => setFormData({...formData, position: e.target.value})} />
+                    </div>
+                  </div>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div className="space-y-2">
+                      <Label htmlFor="location">Location</Label>
+                      <Input id="location" required value={formData.location} onChange={(e) => setFormData({...formData, location: e.target.value})} />
+                    </div>
+                    <div className="space-y-2">
+                      <Label htmlFor="salary">Salary</Label>
+                      <Input id="salary" required value={formData.salary} onChange={(e) => setFormData({...formData, salary: e.target.value})} />
+                    </div>
+                  </div>
+                  <div className="space-y-2">
+                     <Label htmlFor="jobUrl">Job URL</Label>
+                      <Input id="jobUrl" placeholder="https://..."  value={formData.jobUrl} onChange={(e) => setFormData({...formData, jobUrl: e.target.value})} />
+                  </div>
+                  <div className="space-y-2">
+                     <Label htmlFor="tags">Tags (comma-seperated)</Label>
+                      <Input id="tags" placeholder="React, Tailwind, HighPay" value={formData.tags} required onChange={(e) => setFormData({...formData, tags: e.target.value})} />
+                  </div>
+                  <div className="space-y-2">
+                     <Label htmlFor="description">Description</Label>
+                      <Textarea id="description" value={formData.description} placeholder="breif description of the role" onChange={(e) => setFormData({...formData, description: e.target.value})} />
+                  </div>
+                  <div className="space-y-2">
+                     <Label htmlFor="notes">Notes</Label>
+                      <Textarea id="notes" value={formData.notes} onChange={(e) => setFormData({...formData, notes: e.target.value})} />
+                  </div>
+                </div>
+                <DialogFooter>
+                  <Button type="button" variant="outline" onClick={() => setOpen(false)}>Calcel</Button>
+                  <Button type="submit">Save Changes</Button>
+                </DialogFooter>
+              </form>
+            </DialogContent>
+          </Dialog>
     </>
   );
 }
