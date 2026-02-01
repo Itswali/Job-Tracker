@@ -9,7 +9,7 @@ import {
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu";
 import { Button } from "./ui/button";
-import { updateJobApplication } from "@/lib/actions/job-applications";
+import { deleteJobApplication, updateJobApplication } from "@/lib/actions/job-applications";
 import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, DialogTitle} from "./ui/dialog";
 import { Textarea } from "./ui/textarea";
 import { Label } from "./ui/label";
@@ -51,7 +51,15 @@ export default function JobApplicationCard({
         setIsEditing(false);
       }
     } catch (err) {
-      console.error("Failed to move job application: ", err)
+      console.error("Failed to edit job application: ", err)
+    }
+  }
+
+  async function handleDelete(){
+    try {
+      const result = await deleteJobApplication(job._id)
+    } catch (err) {
+      console.error("Failed to delete job application: ", err)
     }
   }
 
@@ -154,7 +162,7 @@ export default function JobApplicationCard({
                   )}
 
                   <div className="h-px bg-gray-100 my-1" />
-                  <DropdownMenuItem className="text-red-600 focus:text-red-600 cursor-pointer">
+                  <DropdownMenuItem className="text-red-600 focus:text-red-600 cursor-pointer" onClick={() => handleDelete()}>
                     <Trash2 className="mr-2 h-4 w-4" /> Delete Application
                   </DropdownMenuItem>
                 </DropdownMenuContent>
