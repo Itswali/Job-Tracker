@@ -217,7 +217,7 @@ export default function JobApplicationCard({
                   </div>
                 </div>
                 <DialogFooter>
-                  <Button type="button" variant="outline" onClick={() => setOpen(false)}>Calcel</Button>
+                  <Button type="button" variant="outline" onClick={() => setIsEditing(false)}>Calcel</Button>
                   <Button type="submit">Save Changes</Button>
                 </DialogFooter>
               </form>
