@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { initializeUserBoard } from "../init-user-board";
 import connectDB from "../db";
 
-const mongooseInstance = await connectDB()
+const mongooseInstance = await connectDB();
 const client = mongooseInstance.connection.getClient();
 const db = client.db();
 
@@ -16,7 +16,7 @@ export const auth = betterAuth({
   session: {
     cookieCache: {
       enabled: true,
-      maxAge: 60*60
+      maxAge: 60 * 60,
     },
   },
   emailAndPassword: {
@@ -26,7 +26,7 @@ export const auth = betterAuth({
     user: {
       create: {
         after: async (user) => {
-          if(user.id) {
+          if (user.id) {
             await initializeUserBoard(user.id);
           }
         },
@@ -37,17 +37,18 @@ export const auth = betterAuth({
 
 export async function getSession() {
   const result = await auth.api.getSession({
-    headers: await headers()
+    headers: await headers(),
   });
+
   return result;
 }
 
 export async function signOut() {
   const result = await auth.api.signOut({
-    headers: await headers()
+    headers: await headers(),
   });
 
-  if(result.success) {
-    redirect("/sign-in")
+  if (result.success) {
+    redirect("/sign-in");
   }
 }

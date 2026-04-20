@@ -8,7 +8,7 @@ export interface JobApplication {
   salary?: string;
   jobUrl?: string;
   order: number;
-  columnId: string;
+  columnId?: string;
   tags?: string[];
   description?: string;
 }
