@@ -1,4 +1,4 @@
-import mongoose, {Schema, Document} from "mongoose";
+import mongoose, { Schema, Document } from "mongoose";
 
 export interface IBoard extends Document {
   name: string;
@@ -8,27 +8,28 @@ export interface IBoard extends Document {
   updatedAt: Date;
 }
 
-
-const BoardSchema = new Schema<IBoard>({
-  name: {
-    type: String,
-    required: true,
-  },
-  userId: {
-    type: String,
-    required: true,
-    index: true,
-  },
-  columns: [
-    {
-    type: Schema.Types.ObjectId,
-    ref: "Column",
+const BoardSchema = new Schema<IBoard>(
+  {
+    name: {
+      type: String,
+      required: true,
     },
-  ],
+    userId: {
+      type: String,
+      required: true,
+      index: true,
+    },
+    columns: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: "Column",
+      },
+    ],
+  },
+  {
+    timestamps: true,
+  }
+);
 
-},
-{
-  timestamps: true,
-});
-
-export default mongoose.models.Board || mongoose.model<IBoard>("Board", BoardSchema);
+export default mongoose.models.Board ||
+  mongoose.model<IBoard>("Board", BoardSchema);
